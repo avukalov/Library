@@ -30,7 +30,7 @@ namespace Library.WebAPI.Extensions
 
             services.AddDbContext<LibraryDbContext>(options =>
                 options.UseSqlServer(databaseConnections.LibraryDbConnectionString, x =>
-                    x.MigrationsAssembly("WebAPI")));
+                    x.MigrationsAssembly("Library.WebAPI")));
         }
 
         public static void ConfigureUnitOfWork(this IServiceCollection services)
