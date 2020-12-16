@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Library.DAL.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace Library.DAL
 {
@@ -7,5 +8,11 @@ namespace Library.DAL
         public LibraryDbContext(DbContextOptions options) : base(options)
         {
         }
+
+        public DbSet<UserEntity> Users { get; set; }
+        public DbSet<EmployeeEntity> Employees { get; set; }
+        public DbSet<BookEntity> Books { get; set; }
+        public DbSet<AuthorEntity> Authors { get; set; }
+
     }
 }

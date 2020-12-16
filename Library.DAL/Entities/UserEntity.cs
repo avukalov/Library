@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
 namespace Library.DAL.Entities
 {
+    [Table("User")]
     public class UserEntity
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid UserID { get; set; }
 
         [RegularExpression(@"^[A-Z]+[a-zA-Z""'\s-]*$")]
@@ -29,17 +32,9 @@ namespace Library.DAL.Entities
         public string Oib { get; set; }
 
         [DataType(DataType.Date)]
-        [Required(ErrorMessage = "Date of join is required")]
-        public DateTime JoinDate { get; set; }
+        public DateTime JoinDate { get; set; } = DateTime.Now;
 
         //public ICollection<Borrowment> Borrowments { get; set; }
 
-        public string FullName
-        {
-            get
-            {
-                return FirstName + ", " + LastName;
-            }
-        }
     }
 }

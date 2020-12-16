@@ -10,10 +10,24 @@ namespace Library.Repository
     public class UnitOfWork : IUnitOfWork
     {
         private LibraryDbContext DbContext;
+        private IUserRepository _user;
 
         public UnitOfWork(LibraryDbContext dbContext)
         {
             DbContext = dbContext;
+        }
+
+        public IUserRepository User
+        {
+            get
+            {
+                if (_user == null)
+                {
+                    _user = new UserRepository(DbContext);
+                }
+
+                return _user;
+            }
         }
 
         public async Task SaveAsync()

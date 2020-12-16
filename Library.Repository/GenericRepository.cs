@@ -22,22 +22,22 @@ namespace Library.Repository
             this.DbContext.Set<TEntity>().Add(entity);
         }
 
-        void IGenericRepository<TEntity>.Delete(TEntity entity)
+        public void Delete(TEntity entity)
         {
             this.DbContext.Set<TEntity>().Remove(entity);
         }
 
-        IQueryable<TEntity> IGenericRepository<TEntity>.FindAll()
+        public IQueryable<TEntity> FindAll()
         {
             return this.DbContext.Set<TEntity>().AsNoTracking();
         }
 
-        IQueryable<TEntity> IGenericRepository<TEntity>.FindByCondition(Expression<Func<TEntity, bool>> expression)
+        public IQueryable<TEntity> FindByCondition(Expression<Func<TEntity, bool>> expression)
         {
             return this.DbContext.Set<TEntity>().Where(expression).AsNoTracking();
         }
 
-        void IGenericRepository<TEntity>.Update(TEntity entity)
+        public void Update(TEntity entity)
         {
             this.DbContext.Set<TEntity>().Update(entity);
         }

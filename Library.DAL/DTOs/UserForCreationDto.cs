@@ -1,17 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
-namespace Library.DAL.Entities
+namespace Library.DAL.DTOs
 {
-    [Table("Author")]
-    public class AuthorEntity
+    public class UserForCreationDto
     {
-        [Key]
-        public Guid AuthorID { get; set; }
-
         [RegularExpression(@"^[A-Z]+[a-zA-Z""'\s-]*$")]
         [Required(ErrorMessage = "Firstname is required")]
         [StringLength(50, MinimumLength = 2, ErrorMessage = "Firstame can't be longer then 50 characters")]
@@ -22,17 +17,13 @@ namespace Library.DAL.Entities
         [StringLength(50, MinimumLength = 2, ErrorMessage = "Lastname can't be longer then 50 characters")]
         public string LastName { get; set; }
 
-        public string Nationality { get; set; } = "unknown";
+        [DataType(DataType.Date)]
+        [Required(ErrorMessage = "Date of birth is required")]
+        public DateTime DateOfBirth { get; set; }
 
-        [InverseProperty("Author")]
-        public ICollection<BookEntity> Books { get; set; }
+        [Required(ErrorMessage = "Oib is required")]
+        [StringLength(11, MinimumLength = 11, ErrorMessage = "Oib must contains 11 digits")]
+        public string Oib { get; set; }
 
-        public string FullName
-        {
-            get
-            {
-                return FirstName + ", " + LastName;
-            }
-        }
     }
 }

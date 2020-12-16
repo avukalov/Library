@@ -2,10 +2,12 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
 namespace Library.DAL.Entities
 {
+    [Table("Book")]
     public class BookEntity
     {
         [Key]
@@ -28,6 +30,8 @@ namespace Library.DAL.Entities
         [DataType(DataType.Date)]
         public DateTime ReleaseYear { get; set; }
 
-        public ICollection<AuthorEntity> Authors { get; set; }
+        [ForeignKey(nameof(AuthorEntity))]
+        public Guid AuthorID { get; set; }
+        public AuthorEntity Author { get; set; }
     }
 }

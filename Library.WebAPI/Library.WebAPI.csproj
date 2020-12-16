@@ -17,6 +17,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\Library.DAL\Library.DAL.csproj" />
+		<ProjectReference Include="..\Library.Models\Library.Models.csproj" />
 		<ProjectReference Include="..\Library.Repository.Common\Library.Repository.Common.csproj" />
 		<ProjectReference Include="..\Library.Repository\Library.Repository.csproj" />
 	</ItemGroup>

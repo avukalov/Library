@@ -7,6 +7,7 @@ namespace Library.Repository.Common
 {
     public interface IUnitOfWork : IDisposable
     {
+        IUserRepository User { get; }
         Task SaveAsync();
     }
 }
