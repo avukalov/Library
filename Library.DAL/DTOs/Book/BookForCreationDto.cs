@@ -1,18 +1,12 @@
-﻿using Microsoft.VisualBasic.CompilerServices;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
-namespace Library.DAL.Entities
+namespace Library.DAL.DTOs.Book
 {
-    [Table("Book")]
-    public class BookEntity
+    public class BookForCreationDto
     {
-        [Key]
-        public Guid BookID { get; set; }
-
         [Required(ErrorMessage = "Title is required")]
         [StringLength(100, MinimumLength = 1, ErrorMessage = "Title must be between 1 and 100 characters")]
         public string Title { get; set; }
@@ -40,8 +34,8 @@ namespace Library.DAL.Entities
         [DataType(DataType.Date)]
         public DateTime Published { get; set; }
 
-        [ForeignKey(nameof(AuthorEntity))]
+        [Required(ErrorMessage = "AuthorID is required")]
         public Guid AuthorID { get; set; }
-        public AuthorEntity Author { get; set; }
+
     }
 }

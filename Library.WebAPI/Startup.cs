@@ -22,14 +22,14 @@ namespace Library.WebAPI
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+
+            // ServiceExtensions
             services.ConfigureCors();
             services.ConfigureSqlServer(Configuration);
             services.ConfigureUnitOfWork();
-            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Library.WebAPI", Version = "v1" });
-            });
+            services.ConfigureAutoMapper();
+            services.ConfigureSwagger();
+
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

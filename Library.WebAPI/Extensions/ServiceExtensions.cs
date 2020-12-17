@@ -1,10 +1,15 @@
-﻿using Library.DAL;
+﻿using AutoMapper;
+using Library.Common.Mapping;
+using Library.DAL;
 using Library.Repository;
 using Library.Repository.Common;
 using Library.WebAPI.Settings;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.OpenApi.Models;
+using System;
+using System.Reflection;
 
 namespace Library.WebAPI.Extensions
 {
@@ -33,9 +38,29 @@ namespace Library.WebAPI.Extensions
                     x.MigrationsAssembly("Library.WebAPI")));
         }
 
+        public static void ConfigureAutoMapper(this IServiceCollection services)
+        {
+            var mapperConfig = new Action<IMapperConfigurationExpression>(options =>
+            {
+                options.AddProfile<UserProfile>();
+                options.AddProfile<AuthorProfile>();
+                options.AddProfile<BookProfile>();
+            });
+
+            services.AddAutoMapper(mapperConfig);
+        }
+
         public static void ConfigureUnitOfWork(this IServiceCollection services)
         {
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+        }
+
+        public static void ConfigureSwagger(this IServiceCollection services)
+        {
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Library.WebAPI", Version = "v1" });
+            });
         }
     }
 }

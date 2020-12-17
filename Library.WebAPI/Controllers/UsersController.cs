@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Library.DAL.DTOs;
+using Library.DAL.DTOs.User;
 using Library.DAL.Entities;
 using Library.Repository.Common;
 using Microsoft.AspNetCore.Http;
@@ -32,7 +32,7 @@ namespace Library.WebAPI.Controllers
 
             if (user == null)
             {
-                return BadRequest($"No user with id: {id} found");
+                return NotFound();
             }
 
             var userResult = Mapper.Map<UserDto>(user);

@@ -8,6 +8,8 @@ namespace Library.Repository.Common
     public interface IUnitOfWork : IDisposable
     {
         IUserRepository User { get; }
+        IAuthorRepository Author { get; }
+        IBookRepository Book { get; }
         Task SaveAsync();
     }
 }
