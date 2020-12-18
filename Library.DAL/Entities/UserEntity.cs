@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Identity;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -6,13 +7,9 @@ using System.Text;
 
 namespace Library.DAL.Entities
 {
-    [Table("User")]
-    public class UserEntity
+    public class UserEntity : IdentityUser<Guid>
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public Guid UserID { get; set; }
-
+        
         [Required(ErrorMessage = "Firstname is required")]
         [StringLength(50, MinimumLength = 2, ErrorMessage = "Firstame can't be longer then 50 characters")]
         public string FirstName { get; set; }
@@ -29,8 +26,7 @@ namespace Library.DAL.Entities
         [StringLength(11, MinimumLength = 11, ErrorMessage = "Oib must contains 11 digits")]
         public string Oib { get; set; }
 
-        [DataType(DataType.Date)]
-        public DateTime JoinDate { get; set; } = DateTime.Now;
+        
 
         //public ICollection<Borrowment> Borrowments { get; set; }
 

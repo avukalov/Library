@@ -8,9 +8,8 @@ namespace Library.Common.Mapping
     {
         public UserProfile()
         {
-            CreateMap<UserEntity, UserDto>()
-                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.UserID));
-            CreateMap<UserForCreationDto, UserEntity>();
+            CreateMap<UserForRegistrationDto, UserEntity>();
+            CreateMap<UserEntity, UserDto>();
         }
     }
 }
