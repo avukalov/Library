@@ -26,6 +26,7 @@ namespace Library.WebAPI
             // ServiceExtensions
             services.ConfigureCors();
             services.ConfigureSqlServer(Configuration);
+            services.ConfigureIdentity();
             services.ConfigureUnitOfWork();
             services.ConfigureAutoMapper();
             services.ConfigureSwagger();

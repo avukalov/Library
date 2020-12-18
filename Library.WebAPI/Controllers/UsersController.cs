@@ -1,12 +1,9 @@
 ﻿using AutoMapper;
 using Library.DAL.DTOs.User;
 using Library.DAL.Entities;
-using Library.Repository.Common;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Library.WebAPI.Controllers
@@ -16,53 +13,43 @@ namespace Library.WebAPI.Controllers
     public class UsersController : ControllerBase
     {
         
-        private IUnitOfWork UnitOfWork;
-        private IMapper Mapper;
+        private readonly UserManager<UserEntity> _userManager;
+        private IMapper _mapper;
 
-        public UsersController(IUnitOfWork unitOfWork, IMapper mapper)
+        public UsersController(UserManager<UserEntity> userManager, IMapper mapper)
         {
-            UnitOfWork = unitOfWork;
-            Mapper = mapper;
+            _userManager = userManager;
+            _mapper = mapper;
         }
 
         [HttpGet("{id}", Name = "UserById")]
         public async Task<IActionResult> GetUserById(Guid id)
         {
-            var user = await UnitOfWork.User.GetUserByIdAsync(id);
+            var user = await _userManager.FindByIdAsync(id.ToString());
 
             if (user == null)
             {
                 return NotFound();
             }
 
-            var userResult = Mapper.Map<UserDto>(user);
+            var userResult = _mapper.Map<UserDto>(user);
 
             return Ok(userResult);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> CreateUser([FromBody] UserForCreationDto user)
+        [HttpGet("username/{userName}", Name = "UserByUserName")]
+        public async Task<IActionResult> GetUserByUserName(string userName)
         {
+            var user = await _userManager.FindByNameAsync(userName);
+
             if (user == null)
             {
-                return BadRequest("User object is null");
+                return NotFound();
             }
 
-            if (!ModelState.IsValid)
-            {
-                return new BadRequestObjectResult(ModelState);
-            }
+            var userResult = _mapper.Map<UserDto>(user);
 
-            var userEntity = Mapper.Map<UserEntity>(user);
-
-
-            UnitOfWork.User.CreateUser(userEntity);
-            await UnitOfWork.SaveAsync();
-
-            var createdUser = Mapper.Map<UserDto>(userEntity);
-
-            return CreatedAtRoute("UserById", new { id = createdUser.Id }, createdUser);
-
+            return Ok(userResult);
         }
 
     }

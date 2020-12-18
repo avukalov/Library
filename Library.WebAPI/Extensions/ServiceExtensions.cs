@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Library.Common.Mapping;
 using Library.DAL;
+using Library.DAL.Entities;
 using Library.Repository;
 using Library.Repository.Common;
 using Library.WebAPI.Settings;
@@ -38,11 +39,18 @@ namespace Library.WebAPI.Extensions
                     x.MigrationsAssembly("Library.WebAPI")));
         }
 
+        public static void ConfigureIdentity(this IServiceCollection services)
+        {
+            services.AddIdentity<UserEntity, RoleEntity>()
+                .AddEntityFrameworkStores<LibraryDbContext>();
+        }
+
         public static void ConfigureAutoMapper(this IServiceCollection services)
         {
             var mapperConfig = new Action<IMapperConfigurationExpression>(options =>
             {
                 options.AddProfile<UserProfile>();
+                options.AddProfile<RoleProfile>();
                 options.AddProfile<AuthorProfile>();
                 options.AddProfile<BookProfile>();
             });
