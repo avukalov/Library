@@ -15,14 +15,16 @@ namespace Library.DAL.DTOs.User
         [StringLength(50, MinimumLength = 2, ErrorMessage = "Lastname can't be longer then 50 characters")]
         public string LastName { get; set; }
 
+        [Required(ErrorMessage = "Username is required")]
+        [StringLength(50, MinimumLength = 5, ErrorMessage = "Username can't be longer then 50 characters")]
         public string UserName { get; set; }
 
         [Required(ErrorMessage = "Email is required")]
         [EmailAddress]
         public string Email { get; set; }
 
-        [DataType(DataType.Date)]
         [Required(ErrorMessage = "Date of birth is required")]
+        [DataType(DataType.Date)]
         public DateTime DateOfBirth { get; set; }
 
         [Required(ErrorMessage = "Oib is required")]
@@ -31,8 +33,8 @@ namespace Library.DAL.DTOs.User
         
         [Required(ErrorMessage = "Password is required")]
         [DataType(DataType.Password)]
-
         public string Password { get; set; }
+
         [DataType(DataType.Password)]
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }

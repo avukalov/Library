@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Library.WebAPI.Migrations
 {
-    public partial class CreateIdentitySchema : Migration
+    public partial class UpdateTimpstampsMigration_04 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -43,7 +43,8 @@ namespace Library.WebAPI.Migrations
                     FirstName = table.Column<string>(maxLength: 50, nullable: false),
                     LastName = table.Column<string>(maxLength: 50, nullable: false),
                     DateOfBirth = table.Column<DateTime>(nullable: false),
-                    Oib = table.Column<string>(maxLength: 11, nullable: false)
+                    Oib = table.Column<string>(maxLength: 11, nullable: false),
+                    JoinDate = table.Column<DateTime>(nullable: false, defaultValue: new DateTime(2020, 12, 20, 20, 8, 5, 21, DateTimeKind.Local).AddTicks(2433))
                 },
                 constraints: table =>
                 {
@@ -54,15 +55,36 @@ namespace Library.WebAPI.Migrations
                 name: "Author",
                 columns: table => new
                 {
-                    AuthorID = table.Column<Guid>(nullable: false),
+                    AuthorId = table.Column<Guid>(nullable: false),
+                    CreatedAt = table.Column<DateTime>(nullable: false, defaultValue: new DateTime(2020, 12, 20, 20, 8, 5, 33, DateTimeKind.Local).AddTicks(6025)),
+                    UpdatedAt = table.Column<DateTime>(nullable: false, defaultValue: new DateTime(2020, 12, 20, 20, 8, 5, 33, DateTimeKind.Local).AddTicks(6635)),
                     FirstName = table.Column<string>(maxLength: 50, nullable: false),
                     LastName = table.Column<string>(maxLength: 50, nullable: false),
-                    DateOfBirth = table.Column<DateTime>(nullable: false),
-                    Nationality = table.Column<string>(maxLength: 50, nullable: true)
+                    Country = table.Column<string>(maxLength: 50, nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Author", x => x.AuthorID);
+                    table.PrimaryKey("PK_Author", x => x.AuthorId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Book",
+                columns: table => new
+                {
+                    BookId = table.Column<Guid>(nullable: false),
+                    CreatedAt = table.Column<DateTime>(nullable: false, defaultValue: new DateTime(2020, 12, 20, 20, 8, 5, 33, DateTimeKind.Local).AddTicks(341)),
+                    UpdatedAt = table.Column<DateTime>(nullable: false, defaultValue: new DateTime(2020, 12, 20, 20, 8, 5, 33, DateTimeKind.Local).AddTicks(1492)),
+                    Title = table.Column<string>(maxLength: 100, nullable: false),
+                    Publisher = table.Column<string>(maxLength: 50, nullable: false),
+                    Language = table.Column<string>(maxLength: 50, nullable: false),
+                    ISBN = table.Column<string>(maxLength: 13, nullable: false),
+                    Category = table.Column<string>(maxLength: 25, nullable: true),
+                    Genre = table.Column<string>(maxLength: 25, nullable: true),
+                    Published = table.Column<DateTime>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Book", x => x.BookId);
                 });
 
             migrationBuilder.CreateTable(
@@ -172,27 +194,28 @@ namespace Library.WebAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Book",
+                name: "AuthorBook",
                 columns: table => new
                 {
-                    BookID = table.Column<Guid>(nullable: false),
-                    Title = table.Column<string>(maxLength: 100, nullable: false),
-                    Publisher = table.Column<string>(maxLength: 100, nullable: false),
-                    Language = table.Column<string>(maxLength: 50, nullable: false),
-                    ISBN = table.Column<string>(maxLength: 10, nullable: false),
-                    Category = table.Column<string>(maxLength: 50, nullable: false),
-                    Genre = table.Column<string>(maxLength: 50, nullable: true),
-                    Published = table.Column<DateTime>(nullable: false),
-                    AuthorID = table.Column<Guid>(nullable: false)
+                    BookId = table.Column<Guid>(nullable: false),
+                    AuthorId = table.Column<Guid>(nullable: false),
+                    CreatedAt = table.Column<DateTime>(nullable: false, defaultValue: new DateTime(2020, 12, 20, 20, 8, 5, 33, DateTimeKind.Local).AddTicks(8692)),
+                    UpdatedAt = table.Column<DateTime>(nullable: false, defaultValue: new DateTime(2020, 12, 20, 20, 8, 5, 33, DateTimeKind.Local).AddTicks(9319))
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Book", x => x.BookID);
+                    table.PrimaryKey("PK_AuthorBook", x => new { x.AuthorId, x.BookId });
                     table.ForeignKey(
-                        name: "FK_Book_Author_AuthorID",
-                        column: x => x.AuthorID,
+                        name: "FK_AuthorBook_Author_AuthorId",
+                        column: x => x.AuthorId,
                         principalTable: "Author",
-                        principalColumn: "AuthorID",
+                        principalColumn: "AuthorId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_AuthorBook_Book_BookId",
+                        column: x => x.BookId,
+                        principalTable: "Book",
+                        principalColumn: "BookId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -236,9 +259,9 @@ namespace Library.WebAPI.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Book_AuthorID",
-                table: "Book",
-                column: "AuthorID");
+                name: "IX_AuthorBook_BookId",
+                table: "AuthorBook",
+                column: "BookId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -259,7 +282,7 @@ namespace Library.WebAPI.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Book");
+                name: "AuthorBook");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
@@ -269,6 +292,9 @@ namespace Library.WebAPI.Migrations
 
             migrationBuilder.DropTable(
                 name: "Author");
+
+            migrationBuilder.DropTable(
+                name: "Book");
         }
     }
 }

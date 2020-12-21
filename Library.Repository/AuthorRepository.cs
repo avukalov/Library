@@ -16,24 +16,24 @@ namespace Library.Repository
         }
 
         public void CreateAuthor(AuthorEntity author) => Create(author);
-
         public void DeleteAuthor(AuthorEntity author) => Delete(author);
-
-        public async Task<AuthorEntity> GetAuthorByIdAsync(Guid authorId)
-        {
-            return await FindByCondition(a => a.AuthorID.Equals(authorId)).FirstOrDefaultAsync();
-        }
-
-        public async Task<AuthorEntity> GetAuthorWithBooksAsync(Guid authorId)
-        {
-            return await FindByCondition(a => a.AuthorID.Equals(authorId)).Include(b => b.Books).FirstOrDefaultAsync();
-        }
+        public void UpdateAuthor(AuthorEntity author) => Update(author);
 
         public async Task<IEnumerable<AuthorEntity>> GetAuthorsAsync()
         {
             return await FindAll().OrderBy(a => a.LastName).ToListAsync();
         }
+        public async Task<AuthorEntity> GetAuthorByIdAsync(Guid authorId)
+        {
+            return await Find(a => a.AuthorId.Equals(authorId)).FirstOrDefaultAsync();
+        }
+        public async Task<AuthorEntity> GetAuthorWithBooksAsync(Guid authorId)
+        {
+            return await Find(a => a.AuthorId.Equals(authorId))
+                .Include(b => b.AuthorBooks)
+                .ThenInclude(b => b.Book)
+                .FirstOrDefaultAsync();
+        }
 
-        public void UpdateAuthor(AuthorEntity author) => Update(author);
     }
 }

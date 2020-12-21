@@ -10,6 +10,7 @@ namespace Library.Repository.Common
     {
         Task<BookEntity> GetBookByIdAsync(Guid bookId);
         Task<IEnumerable<BookEntity>> GetBooksAsync();
+        Task<BookEntity> GetBookWithAuthorsAsync(Guid bookId);
 
         void CreateBook(BookEntity book);
         void UpdateBook(BookEntity book);

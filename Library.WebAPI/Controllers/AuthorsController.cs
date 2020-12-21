@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
+using Library.Common.Logging;
 using Library.DAL.DTOs.Author;
 using Library.DAL.Entities;
 using Library.Repository.Common;
+using Library.Service.Common;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -14,53 +16,132 @@ namespace Library.WebAPI.Controllers
     [ApiController]
     public class AuthorsController : ControllerBase
     {
-        private readonly IUnitOfWork UnitOfWork;
-        private readonly IMapper Mapper;
+        private readonly IAuthorService _authorService;
+        private readonly ILoggerManager _logger;
 
-        public AuthorsController(IUnitOfWork unitOfWork, IMapper mapper)
+        public AuthorsController(IAuthorService authorService, ILoggerManager logger)
         {
-            UnitOfWork = unitOfWork;
-            Mapper = mapper;
+            _authorService = authorService;
+            _logger = logger;
         }
 
-
-        [HttpGet("{id}", Name = "AuthorById")]
-        public async Task<IActionResult> GetAuthorById(Guid id)
+        [HttpGet]
+        public async Task<IActionResult> GetAuthors()
         {
-            var author = await UnitOfWork.Author.GetAuthorByIdAsync(id);
+            var result = await _authorService.GetAuthorsAsync();
 
-            if(author == null)
+            if (!result.Success)
             {
-                return NotFound();
+                if (result.Message == "NotFound")
+                {
+                    _logger.LogError($"No Author found");
+                    return NotFound();
+                }
+
+                return BadRequest();
             }
 
-            var authorResult = Mapper.Map<AuthorDto>(author);
+            return Ok(result.Data);
+        }
 
-            return Ok(authorResult);
+        [HttpGet("{id}", Name = nameof(GetAuthorById))]
+        public async Task<IActionResult> GetAuthorById(Guid id)
+        {
+            var result = await _authorService.GetAuthorByIdAsync(id);
+
+            if (!result.Success)
+            {
+                if (result.Message == "NotFound")
+                {
+                    _logger.LogError($"Author with id: {id} not found");
+                    return NotFound();
+                }
+
+                return BadRequest();
+            }
+
+            return Ok(result.Data);
+        }
+
+        [HttpGet("{id}/books")]
+        public async Task<IActionResult> GetAuthorWithBooks(Guid id)
+        {
+            var result = await _authorService.GetAuthorWithBooksAsync(id);
+
+            if (!result.Success)
+            {
+                if (result.Message == "NotFound")
+                {
+                    _logger.LogError($"Author with id: {id} not found");
+                    return NotFound();
+                }
+
+                return BadRequest();
+            }
+
+            return Ok(result.Data);
         }
 
         [HttpPost]
         public async Task<IActionResult> CreateAuthor([FromBody] AuthorForCreationDto author)
         {
-            if (author == null)
-            {
-                return BadRequest("Author object is null");
-            }
-
             if (!ModelState.IsValid)
             {
                 return new BadRequestObjectResult(ModelState);
             }
 
-            var authorEntity = Mapper.Map<AuthorEntity>(author);
+            var result = await _authorService.CreateAuthorAsync(author);
 
-            UnitOfWork.Author.CreateAuthor(authorEntity);
-            await UnitOfWork.SaveAsync();
+            if (!result.Success)
+            {
+                return BadRequest();
+            }
 
-            var createdAuthor = Mapper.Map<AuthorDto>(authorEntity);
+            return CreatedAtRoute(nameof(GetAuthorById), new { id = result.Data.Id }, result.Data);
 
-            return CreatedAtRoute("AuthorById", new { id = createdAuthor.Id }, createdAuthor);
+        }
 
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateAuthor(Guid id, [FromBody] AuthorForUpdateDto author)
+        {
+            if (!ModelState.IsValid)
+            {
+                return new BadRequestObjectResult(ModelState);
+            }
+
+            var result = await _authorService.UpdateAuthorAsync(id, author);
+
+            if (!result.Success)
+            {
+                if (result.Message == "NotFound")
+                {
+                    _logger.LogError($"Author with id: {id} not found");
+                    return NotFound();
+                }
+
+                return BadRequest();
+            }
+
+            return NoContent();
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteAuthor(Guid id)
+        {
+            var result = await _authorService.DeleteAuthorAsync(id);
+
+            if (!result.Success)
+            {
+                if (result.Message == "NotFound")
+                {
+                    _logger.LogError($"Author with id: {id} not found");
+                    return NotFound();
+                }
+
+                return BadRequest();
+            }
+
+            return NoContent();
         }
     }
 }

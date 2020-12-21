@@ -1,12 +1,11 @@
-﻿using Library.DAL.DTOs.Author;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 
 namespace Library.DAL.DTOs.Book
 {
-    public class BookForCreationDto
+    public class BookForUpdateDto
     {
         [Required(ErrorMessage = "Title is required")]
         [StringLength(100, MinimumLength = 1, ErrorMessage = "Title must be between 1 and 100 characters")]
@@ -37,6 +36,5 @@ namespace Library.DAL.DTOs.Book
 
         [Required(ErrorMessage = "Book must have an author")]
         public Guid AuthorId { get; set; }
-        
     }
 }

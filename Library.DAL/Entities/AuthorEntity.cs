@@ -7,28 +7,15 @@ using System.Text;
 namespace Library.DAL.Entities
 {
     [Table("Author")]
-    public class AuthorEntity
+    public class AuthorEntity : BaseEntity
     {
         [Key]
-        public Guid AuthorID { get; set; }
-
-        [Required(ErrorMessage = "Firstname is required")]
-        [StringLength(50, MinimumLength = 2, ErrorMessage = "Firstame can't be longer then 50 characters")]
+        public Guid AuthorId { get; set; }
         public string FirstName { get; set; }
-
-        [Required(ErrorMessage = "Lastname is required")]
-        [StringLength(50, MinimumLength = 2, ErrorMessage = "Lastname can't be longer then 50 characters")]
         public string LastName { get; set; }
+        public string Country { get; set; }
 
-        [Required(ErrorMessage = "Date of birth is required")]
-        [DataType(DataType.Date)]
-        public DateTime DateOfBirth { get; set; }
-
-        [StringLength(50, MinimumLength = 2, ErrorMessage = "Nationality can't be longer then 50 characters")]
-        public string Nationality { get; set; }
-
-        [InverseProperty("Author")]
-        public IEnumerable<BookEntity> Books { get; set; }
+        public List<AuthorBookEntity> AuthorBooks { get; set; }
 
     }
 }

@@ -10,6 +10,9 @@ namespace Library.Repository.Common
         IUserRepository User { get; }
         IAuthorRepository Author { get; }
         IBookRepository Book { get; }
+        IAuthorBookRepository AuthorBook { get; }
+
         Task SaveAsync();
+
     }
 }

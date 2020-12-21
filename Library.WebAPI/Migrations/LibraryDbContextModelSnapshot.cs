@@ -19,14 +19,49 @@ namespace Library.WebAPI.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+            modelBuilder.Entity("Library.DAL.Entities.AuthorBookEntity", b =>
+                {
+                    b.Property<Guid>("AuthorId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("BookId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValue(new DateTime(2020, 12, 20, 20, 8, 5, 33, DateTimeKind.Local).AddTicks(8692));
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValue(new DateTime(2020, 12, 20, 20, 8, 5, 33, DateTimeKind.Local).AddTicks(9319));
+
+                    b.HasKey("AuthorId", "BookId");
+
+                    b.HasIndex("BookId");
+
+                    b.ToTable("AuthorBook");
+                });
+
             modelBuilder.Entity("Library.DAL.Entities.AuthorEntity", b =>
                 {
-                    b.Property<Guid>("AuthorID")
+                    b.Property<Guid>("AuthorId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("DateOfBirth")
-                        .HasColumnType("datetime2");
+                    b.Property<string>("Country")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(50)")
+                        .HasMaxLength(50);
+
+                    b.Property<DateTime>("CreatedAt")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValue(new DateTime(2020, 12, 20, 20, 8, 5, 33, DateTimeKind.Local).AddTicks(6025));
 
                     b.Property<string>("FirstName")
                         .IsRequired()
@@ -38,37 +73,41 @@ namespace Library.WebAPI.Migrations
                         .HasColumnType("nvarchar(50)")
                         .HasMaxLength(50);
 
-                    b.Property<string>("Nationality")
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
+                    b.Property<DateTime>("UpdatedAt")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValue(new DateTime(2020, 12, 20, 20, 8, 5, 33, DateTimeKind.Local).AddTicks(6635));
 
-                    b.HasKey("AuthorID");
+                    b.HasKey("AuthorId");
 
                     b.ToTable("Author");
                 });
 
             modelBuilder.Entity("Library.DAL.Entities.BookEntity", b =>
                 {
-                    b.Property<Guid>("BookID")
+                    b.Property<Guid>("BookId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("AuthorID")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("Category")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
+                        .HasColumnType("nvarchar(25)")
+                        .HasMaxLength(25);
+
+                    b.Property<DateTime>("CreatedAt")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValue(new DateTime(2020, 12, 20, 20, 8, 5, 33, DateTimeKind.Local).AddTicks(341));
 
                     b.Property<string>("Genre")
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
+                        .HasColumnType("nvarchar(25)")
+                        .HasMaxLength(25);
 
                     b.Property<string>("ISBN")
                         .IsRequired()
-                        .HasColumnType("nvarchar(10)")
-                        .HasMaxLength(10);
+                        .HasColumnType("nvarchar(13)")
+                        .HasMaxLength(13);
 
                     b.Property<string>("Language")
                         .IsRequired()
@@ -80,17 +119,21 @@ namespace Library.WebAPI.Migrations
 
                     b.Property<string>("Publisher")
                         .IsRequired()
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasColumnType("nvarchar(50)")
+                        .HasMaxLength(50);
 
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(100)")
                         .HasMaxLength(100);
 
-                    b.HasKey("BookID");
+                    b.Property<DateTime>("UpdatedAt")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValue(new DateTime(2020, 12, 20, 20, 8, 5, 33, DateTimeKind.Local).AddTicks(1492));
 
-                    b.HasIndex("AuthorID");
+                    b.HasKey("BookId");
 
                     b.ToTable("Book");
                 });
@@ -150,6 +193,11 @@ namespace Library.WebAPI.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(50)")
                         .HasMaxLength(50);
+
+                    b.Property<DateTime>("JoinDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValue(new DateTime(2020, 12, 20, 20, 8, 5, 21, DateTimeKind.Local).AddTicks(2433));
 
                     b.Property<string>("LastName")
                         .IsRequired()
@@ -308,11 +356,17 @@ namespace Library.WebAPI.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("Library.DAL.Entities.BookEntity", b =>
+            modelBuilder.Entity("Library.DAL.Entities.AuthorBookEntity", b =>
                 {
                     b.HasOne("Library.DAL.Entities.AuthorEntity", "Author")
-                        .WithMany("Books")
-                        .HasForeignKey("AuthorID")
+                        .WithMany("AuthorBooks")
+                        .HasForeignKey("AuthorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Library.DAL.Entities.BookEntity", "Book")
+                        .WithMany("BookAuthors")
+                        .HasForeignKey("BookId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

@@ -1,12 +1,14 @@
 ﻿using AutoMapper;
 using Library.DAL.DTOs.User;
 using Library.DAL.Entities;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Library.WebAPI.Controllers
@@ -51,6 +53,33 @@ namespace Library.WebAPI.Controllers
             var userResult = _mapper.Map<UserDto>(userEntity);
 
             return CreatedAtRoute("UserById", new { controller = "users", id = userResult.Id }, userResult);
+        }
+    
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] UserForLoginDto user)
+        {
+            if (!ModelState.IsValid)
+            {
+                return new BadRequestObjectResult(ModelState);
+            }
+
+            var userResult = await _userManager.FindByEmailAsync(user.Email);
+
+            if (userResult != null && await _userManager.CheckPasswordAsync(userResult, user.Password))
+            {
+                var identity = new ClaimsIdentity(IdentityConstants.ApplicationScheme);
+                identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, userResult.Id.ToString()));
+                identity.AddClaim(new Claim(ClaimTypes.Name, userResult.UserName));
+
+                await HttpContext.SignInAsync(IdentityConstants.ApplicationScheme, new ClaimsPrincipal(identity));
+
+                return Ok(identity);
+            }
+            else
+            {
+                ModelState.AddModelError("", "Invalid Username or Password");
+                return new BadRequestObjectResult(ModelState);
+            }
         }
     }
 }

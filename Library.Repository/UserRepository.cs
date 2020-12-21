@@ -20,7 +20,7 @@ namespace Library.Repository
 
         public async Task<UserEntity> GetUserByIdAsync(Guid userId)
         {
-            return await FindByCondition(u => u.Id.Equals(userId)).FirstOrDefaultAsync();
+            return await Find(u => u.Id.Equals(userId)).FirstOrDefaultAsync();
         }
 
         public void UpdateUser(UserEntity user) => Update(user);

@@ -4,6 +4,7 @@ using Library.DAL.DTOs.Author;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
 
 namespace Library.Common.Mapping
 {
@@ -12,8 +13,12 @@ namespace Library.Common.Mapping
         public AuthorProfile()
         {
             CreateMap<AuthorEntity, AuthorDto>()
-                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.AuthorID));
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.AuthorId));
             CreateMap<AuthorForCreationDto, AuthorEntity>();
+            CreateMap<AuthorForUpdateDto, AuthorEntity>();
+            CreateMap<AuthorEntity, AuthorWithBooksDto>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.AuthorId))
+                .ForMember(dest => dest.Books, opt => opt.MapFrom(src => src.AuthorBooks.Select(ab => ab.Book)));
         }
     }
 }

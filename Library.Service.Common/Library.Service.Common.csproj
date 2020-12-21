@@ -4,4 +4,12 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Library.Common\Library.Common.csproj" />
+    <ProjectReference Include="..\Library.DAL\Library.DAL.csproj" />
+    <ProjectReference Include="..\Library.Models.Common\Library.Models.Common.csproj" />
+    <ProjectReference Include="..\Library.Models\Library.Models.csproj" />
+    <ProjectReference Include="..\Library.Repository.Common\Library.Repository.Common.csproj" />
+  </ItemGroup>
+
 </Project>

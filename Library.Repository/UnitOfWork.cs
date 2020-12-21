@@ -13,6 +13,7 @@ namespace Library.Repository
         private IUserRepository _user;
         private IAuthorRepository _author;
         private IBookRepository _book;
+        private IAuthorBookRepository _authorBook;
 
         public UnitOfWork(LibraryDbContext dbContext)
         {
@@ -53,6 +54,18 @@ namespace Library.Repository
                 }
 
                 return _book;
+            }
+        }
+        public IAuthorBookRepository AuthorBook
+        {
+            get
+            {
+                if (_authorBook == null)
+                {
+                    _authorBook = new AuthorBookRepository(_dbContext);
+                }
+
+                return _authorBook;
             }
         }
 

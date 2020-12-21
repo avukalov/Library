@@ -1,12 +1,13 @@
-using AutoMapper;
+using Autofac;
 using Library.WebAPI.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.OpenApi.Models;
+using NLog;
 using System;
+using System.IO;
 
 namespace Library.WebAPI
 {
@@ -14,6 +15,7 @@ namespace Library.WebAPI
     {
         public Startup(IConfiguration configuration)
         {
+            LogManager.LoadConfiguration(String.Concat(Directory.GetCurrentDirectory(), "/nlog.config"));
             Configuration = configuration;
         }
 
@@ -21,16 +23,19 @@ namespace Library.WebAPI
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
-
-            // ServiceExtensions
+            // Extensions/ServiceExtensions.cs
             services.ConfigureCors();
+            services.ConfigureControllers();
             services.ConfigureSqlServer(Configuration);
             services.ConfigureIdentity();
-            services.ConfigureUnitOfWork();
             services.ConfigureAutoMapper();
             services.ConfigureSwagger();
+        }
 
+        public void ConfigureContainer(ContainerBuilder builder)
+        {
+            // Extensions/ServiceExtensions.cs
+            builder.ConfigureAutoFac();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

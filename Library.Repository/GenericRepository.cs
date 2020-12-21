@@ -32,7 +32,7 @@ namespace Library.Repository
             return this.DbContext.Set<TEntity>().AsNoTracking();
         }
 
-        public IQueryable<TEntity> FindByCondition(Expression<Func<TEntity, bool>> expression)
+        public IQueryable<TEntity> Find(Expression<Func<TEntity, bool>> expression)
         {
             return this.DbContext.Set<TEntity>().Where(expression).AsNoTracking();
         }

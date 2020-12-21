@@ -15,6 +15,6 @@ namespace Library.DAL.DTOs.Book
         public string Category { get; set; }
         public string Genre { get; set; }
         public DateTime Published { get; set; }
-        public AuthorDto Author { get; set; }
+        public List<AuthorDto> Authors { get; set; }
     }
 }

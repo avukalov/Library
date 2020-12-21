@@ -1,12 +1,10 @@
 ﻿using AutoMapper;
+using Library.Common.Logging;
 using Library.DAL.DTOs.Book;
-using Library.DAL.Entities;
 using Library.Repository.Common;
-using Microsoft.AspNetCore.Http;
+using Library.Service.Common;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Library.WebAPI.Controllers
@@ -15,68 +13,133 @@ namespace Library.WebAPI.Controllers
     [ApiController]
     public class BooksController : ControllerBase
     {
-        private readonly IUnitOfWork UnitOfWork;
-        private readonly IMapper Mapper;
+        private readonly IBookService _bookService;
+        private readonly IAuthorService _authorService;
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IMapper _mapper;
+        private readonly ILoggerManager _logger;
 
-        public BooksController(IUnitOfWork unitOfWork, IMapper mapper)
+        public BooksController(IBookService bookService, IAuthorService authorService, IUnitOfWork unitOfWork, IMapper mapper, ILoggerManager logger)
         {
-            UnitOfWork = unitOfWork;
-            Mapper = mapper;
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> GetBooks()
-        {
-            // vraca IEnumerable ---> provjeriti ICollection
-            var books = await UnitOfWork.Book.GetBooksAsync();
-
-            return Ok(books);
-        }
-
-        [HttpGet("{id}", Name = "BookById")]
-        public async Task<IActionResult> GetBookById(Guid id)
-        {
-            var book = await UnitOfWork.Book.GetBookByIdAsync(id);
-
-            if (book == null)
-            {
-                return NotFound($"There is no book with id: {id}");
-            }
-
-            var bookResult = Mapper.Map<BookDto>(book);
-
-            return Ok(bookResult);
+            _bookService = bookService;
+            _authorService = authorService;
+            _unitOfWork = unitOfWork;
+            _mapper = mapper;
+            _logger = logger;
         }
 
         [HttpPost]
         public async Task<IActionResult> CreateBook([FromBody] BookForCreationDto book)
         {
-            if (book == null)
-            {
-                return BadRequest("Book object is null");
-            }
-
-            var author = await UnitOfWork.Author.GetAuthorByIdAsync(book.AuthorID);
-
-            if (author == null)
-            {
-                return BadRequest($"Author with id: { book.AuthorID } not found");
-            }
-
             if (!ModelState.IsValid)
             {
                 return new BadRequestObjectResult(ModelState);
             }
+            
+            var result = await _bookService.CreateBookAsync(book);
+            
 
-            var bookEntity = Mapper.Map<BookEntity>(book);
+            if (!result.Success)
+            {
+                if (result.Message == "NotFound")
+                {
+                    return NotFound();
+                }
 
-            UnitOfWork.Book.CreateBook(bookEntity);
-            await UnitOfWork.SaveAsync();
+                return BadRequest();
+            }
 
-            var createdBook = Mapper.Map<BookDto>(bookEntity);
+            return CreatedAtRoute(nameof(GetBookById), new { id = result.Data.Id }, result.Data);
 
-            return CreatedAtRoute("BookById", new { id = createdBook.Id }, createdBook);
+        }
+        
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateBook(Guid id, [FromBody] BookForUpdateDto book)
+        {
+            var result = await _bookService.UpadateBookAsync(id, book);
 
+            if (!result.Success)
+            {
+                if (result.Message == "NotFound")
+                {
+                    return NotFound();
+                }
+
+                return BadRequest();
+            }
+
+            return NoContent();
+        }
+        
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteBook(Guid id)
+        {
+            var result = await _bookService.DeleteBookAsync(id);
+
+            if (!result.Success)
+            {
+                if (result.Message == "NotFound")
+                {
+                    return NotFound();
+                }
+
+                return BadRequest();
+            }
+            return NoContent();
+        }
+        
+        [HttpGet]
+        public async Task<IActionResult> GetBooks()
+        {
+            var result = await _bookService.GetBooksAsync();
+
+            if (!result.Success)
+            {
+                if (result.Message == "NotFound")
+                {
+                    return NotFound();
+                }
+
+                return BadRequest();
+            }
+
+            return Ok(result.Data);
+        }
+
+        [HttpGet("{id}", Name = nameof(GetBookById))]
+        public async Task<IActionResult> GetBookById(Guid id)
+        {
+            var result = await _bookService.GetBookByIdAsync(id);
+
+            if (!result.Success)
+            {
+                if (result.Message == "NotFound")
+                {
+                    return NotFound();
+                }
+
+                return BadRequest();
+            }
+
+            return Ok(result.Data);
+        }
+
+        [HttpGet("{id}/authors")]
+        public async Task<IActionResult> GetBookWithAuthors(Guid id)
+        {
+            var result = await _bookService.GetBookWithAuthrsAsync(id);
+
+            if (!result.Success)
+            {
+                if (result.Message == "NotFound")
+                {
+                    return NotFound();
+                }
+
+                return BadRequest();
+            }
+
+            return Ok(result.Data);
         }
     }
 }

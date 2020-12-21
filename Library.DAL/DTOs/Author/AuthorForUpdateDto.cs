@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Library.DAL.DTOs.Author
 {
-    public class AuthorForCreationDto
+    public class AuthorForUpdateDto
     {
         [Required(ErrorMessage = "Firstname is required")]
         [StringLength(50, MinimumLength = 2, ErrorMessage = "Firstame can't be longer then 50 characters")]

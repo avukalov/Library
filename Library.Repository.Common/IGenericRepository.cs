@@ -8,7 +8,7 @@ namespace Library.Repository.Common
     {
         IQueryable<TEntity> FindAll();
 
-        IQueryable<TEntity> FindByCondition(Expression<Func<TEntity, bool>> expression);
+        IQueryable<TEntity> Find(Expression<Func<TEntity, bool>> expression);
 
         void Create(TEntity entity);
 

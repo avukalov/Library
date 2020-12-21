@@ -1,21 +1,27 @@
-﻿using AutoMapper;
-using Library.Common.Mapping;
+﻿using Autofac;
+using AutoMapper;
+using Library.Common;
 using Library.DAL;
 using Library.DAL.Entities;
 using Library.Repository;
-using Library.Repository.Common;
+using Library.Service;
 using Library.WebAPI.Settings;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using System;
-using System.Reflection;
 
 namespace Library.WebAPI.Extensions
 {
     public static class ServiceExtensions
     {
+        public static void ConfigureControllers(this IServiceCollection services)
+        {
+            services.AddControllers()
+                .AddNewtonsoftJson(options =>
+                    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+        }
         public static void ConfigureCors(this IServiceCollection services)
         {
             services.AddCors(options =>
@@ -28,7 +34,6 @@ namespace Library.WebAPI.Extensions
                     );
             });
         }
-
         public static void ConfigureSqlServer(this IServiceCollection services, IConfiguration configuration)
         {
             var databaseConnections = new ConnectionStrings();
@@ -38,31 +43,26 @@ namespace Library.WebAPI.Extensions
                 options.UseSqlServer(databaseConnections.LibraryDbConnectionString, x =>
                     x.MigrationsAssembly("Library.WebAPI")));
         }
-
         public static void ConfigureIdentity(this IServiceCollection services)
         {
             services.AddIdentity<UserEntity, RoleEntity>()
                 .AddEntityFrameworkStores<LibraryDbContext>();
         }
-
         public static void ConfigureAutoMapper(this IServiceCollection services)
         {
             var mapperConfig = new Action<IMapperConfigurationExpression>(options =>
             {
-                options.AddProfile<UserProfile>();
-                options.AddProfile<RoleProfile>();
-                options.AddProfile<AuthorProfile>();
-                options.AddProfile<BookProfile>();
+                options.AddMaps("Library.Common");
             });
 
             services.AddAutoMapper(mapperConfig);
         }
-
-        public static void ConfigureUnitOfWork(this IServiceCollection services)
+        public static void ConfigureAutoFac(this ContainerBuilder builder)
         {
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            builder.RegisterModule<CommonDIModule>();
+            builder.RegisterModule<ServiceDIModule>();
+            builder.RegisterModule<RepositoryDIModule>();
         }
-
         public static void ConfigureSwagger(this IServiceCollection services)
         {
             services.AddSwaggerGen(c =>
