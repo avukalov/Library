@@ -19,12 +19,12 @@ namespace Library.Repository
     public class BookRepository : GenericRepository<BookEntity>, IBookRepository
     {
         private readonly LibraryDbContext _dbContext;
-        private readonly ISortHelper<BookEntity> _sortHelper;
+        private readonly IQueryHelper<BookEntity> _queryHelper;
 
-        public BookRepository(LibraryDbContext dbContext, ISortHelper<BookEntity> sortHelper) : base(dbContext)
+        public BookRepository(LibraryDbContext dbContext, IQueryHelper<BookEntity> queryHelper) : base(dbContext)
         {
             _dbContext = dbContext;
-            _sortHelper = sortHelper;
+            _queryHelper = queryHelper;
         }
 
         public void CreateBook(BookEntity book) => Create(book);
@@ -55,7 +55,7 @@ namespace Library.Repository
                         b.Published.Year <= bookParameters.MaxPublishedYear)
                         .OrderBy(b => b.Title);
 
-            var sortedBooks = _sortHelper.ApplySort(books, bookParameters.OrderBy);
+            var sortedBooks = _queryHelper.Sort.ApplySort(books, bookParameters.OrderBy);
 
             return await PagedList<BookEntity>.ToPagedList(sortedBooks, bookParameters.PageNumber, bookParameters.PageSize);
         }

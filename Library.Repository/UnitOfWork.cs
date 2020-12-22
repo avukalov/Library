@@ -17,12 +17,12 @@ namespace Library.Repository
         private IBookRepository _book;
         private IAuthorBookRepository _authorBook;
 
-        private ISortHelper<BookEntity> _sortHelper;
+        private IQueryHelper<BookEntity> _queryHelper;
 
-        public UnitOfWork(LibraryDbContext dbContext, ISortHelper<BookEntity> sortHelper)
+        public UnitOfWork(LibraryDbContext dbContext, IQueryHelper<BookEntity> queryHelper)
         {
             _dbContext = dbContext;
-            _sortHelper = sortHelper;
+            _queryHelper = queryHelper;
         }
         
         public IUserRepository User
@@ -55,7 +55,7 @@ namespace Library.Repository
             {
                 if (_book == null)
                 {
-                    _book = new BookRepository(_dbContext, _sortHelper);
+                    _book = new BookRepository(_dbContext, _queryHelper);
                 }
 
                 return _book;
