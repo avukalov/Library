@@ -8,7 +8,7 @@ using System.Text;
 namespace Library.DAL.Entities
 {
     [Table("Book")]
-    public class BookEntity : BaseEntity
+    public class BookEntity : BaseEntity, IEntity
     {
         [Key]
         public Guid BookId { get; set; }

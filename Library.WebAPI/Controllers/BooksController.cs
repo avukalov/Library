@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using Library.Common.Logging;
 using Library.DAL.DTOs.Book;
+using Library.Models;
 using Library.Repository.Common;
 using Library.Service.Common;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -15,16 +17,12 @@ namespace Library.WebAPI.Controllers
     {
         private readonly IBookService _bookService;
         private readonly IAuthorService _authorService;
-        private readonly IUnitOfWork _unitOfWork;
-        private readonly IMapper _mapper;
         private readonly ILoggerManager _logger;
 
-        public BooksController(IBookService bookService, IAuthorService authorService, IUnitOfWork unitOfWork, IMapper mapper, ILoggerManager logger)
+        public BooksController(IBookService bookService, IAuthorService authorService, ILoggerManager logger)
         {
             _bookService = bookService;
             _authorService = authorService;
-            _unitOfWork = unitOfWork;
-            _mapper = mapper;
             _logger = logger;
         }
 
@@ -89,9 +87,14 @@ namespace Library.WebAPI.Controllers
         }
         
         [HttpGet]
-        public async Task<IActionResult> GetBooks()
+        public async Task<IActionResult> GetBooks([FromQuery] BookParameters bookParameters)
         {
-            var result = await _bookService.GetBooksAsync();
+            if (!bookParameters.ValidYearRange)
+            {
+                return BadRequest("Max year cannot be less than min year");
+            }
+
+            var result = await _bookService.GetBooks(bookParameters);
 
             if (!result.Success)
             {
@@ -102,6 +105,8 @@ namespace Library.WebAPI.Controllers
 
                 return BadRequest();
             }
+
+            Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(result.Metadata));
 
             return Ok(result.Data);
         }

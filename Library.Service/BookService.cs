@@ -4,6 +4,7 @@ using Library.DAL.DTOs.AuthorBook;
 using Library.DAL.DTOs.Book;
 using Library.DAL.Entities;
 using Library.Models;
+using Library.Models.Utils;
 using Library.Repository.Common;
 using Library.Service.Common;
 using System;
@@ -159,13 +160,13 @@ namespace Library.Service
             return response;
         }
 
-        public async Task<ServiceResponse<IEnumerable<BookDto>>> GetBooksAsync()
+        public async Task<ServiceResponse<IEnumerable<BookDto>>> GetBooks(BookParameters bookParameters)
         {
             ServiceResponse<IEnumerable<BookDto>> response = new ServiceResponse<IEnumerable<BookDto>>();
 
             try
             {
-                var books = await _unitOfWork.Book.GetBooksAsync();
+                var books = await _unitOfWork.Book.GetBooks(bookParameters);
 
                 if (books == null)
                 {
@@ -174,6 +175,16 @@ namespace Library.Service
 
                     _logger.LogError($"Books not found");
                 }
+
+                response.Metadata = new
+                {
+                    books.TotalCount,
+                    books.PageSize,
+                    books.CurrentPage,
+                    books.TotalPages,
+                    books.HasNext,
+                    books.HasPrevious
+                };
 
                 _logger.LogInfo($"All books retrived");
 

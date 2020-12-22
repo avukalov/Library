@@ -1,4 +1,6 @@
 ﻿using Library.DAL;
+using Library.DAL.Entities;
+using Library.Models.Common.Utils;
 using Library.Repository.Common;
 using System;
 using System.Collections.Generic;
@@ -15,9 +17,12 @@ namespace Library.Repository
         private IBookRepository _book;
         private IAuthorBookRepository _authorBook;
 
-        public UnitOfWork(LibraryDbContext dbContext)
+        private ISortHelper<BookEntity> _sortHelper;
+
+        public UnitOfWork(LibraryDbContext dbContext, ISortHelper<BookEntity> sortHelper)
         {
             _dbContext = dbContext;
+            _sortHelper = sortHelper;
         }
         
         public IUserRepository User
@@ -50,7 +55,7 @@ namespace Library.Repository
             {
                 if (_book == null)
                 {
-                    _book = new BookRepository(_dbContext);
+                    _book = new BookRepository(_dbContext, _sortHelper);
                 }
 
                 return _book;

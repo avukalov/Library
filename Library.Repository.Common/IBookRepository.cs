@@ -1,7 +1,7 @@
 ﻿using Library.DAL.Entities;
+using Library.Models;
+using Library.Models.Utils;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Library.Repository.Common
@@ -9,7 +9,7 @@ namespace Library.Repository.Common
     public interface IBookRepository
     {
         Task<BookEntity> GetBookByIdAsync(Guid bookId);
-        Task<IEnumerable<BookEntity>> GetBooksAsync();
+        Task<PagedList<BookEntity>> GetBooks(BookParameters bookParameters);
         Task<BookEntity> GetBookWithAuthorsAsync(Guid bookId);
 
         void CreateBook(BookEntity book);
