@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using Library.DAL.DTOs.Author;
-using Library.DAL.DTOs.Book;
+using Library.Models.DTOs.Author;
+using Library.Models.DTOs.Book;
 using Library.DAL.Entities;
 using System;
 using System.Collections.Generic;

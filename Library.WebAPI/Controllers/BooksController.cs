@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Library.Common.Logging;
-using Library.DAL.DTOs.Book;
+using Library.Models.DTOs.Book;
 using Library.Models;
 using Library.Repository.Common;
 using Library.Service.Common;
@@ -103,7 +103,7 @@ namespace Library.WebAPI.Controllers
                     return NotFound();
                 }
 
-                return BadRequest();
+                return BadRequest(result.Message);
             }
 
             Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(result.Metadata));

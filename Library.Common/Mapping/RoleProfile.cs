@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Library.DAL.DTOs.Role;
+using Library.Models.DTOs.Role;
 using Library.DAL.Entities;
 using System;
 using System.Collections.Generic;

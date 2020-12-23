@@ -9,7 +9,6 @@ namespace Library.DAL.Entities
     [Table("Author")]
     public class AuthorEntity : BaseEntity
     {
-        [Key]
         public Guid AuthorId { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }

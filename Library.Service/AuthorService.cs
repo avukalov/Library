@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using Library.Common.Logging;
-using Library.DAL.DTOs.Author;
+using Library.Models.DTOs.Author;
 using Library.DAL.Entities;
-using Library.Models.Utils;
+using Library.Models.Utilities;
 using Library.Repository.Common;
 using Library.Service.Common;
 using System;
@@ -42,6 +42,7 @@ namespace Library.Service
             {
                 response.Success = false;
                 response.Message = ex.Message;
+                _logger.LogError(ex.Message);
             }
 
             return response;

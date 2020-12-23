@@ -1,25 +1,24 @@
 ﻿using Library.DAL;
 using Library.DAL.Entities;
-using Library.Models.Common.Utils;
+using Library.Models;
+using Library.Models.Common.Utilities;
 using Library.Repository.Common;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Library.Repository
 {
     public class UnitOfWork : IUnitOfWork
     {
-        private LibraryDbContext _dbContext;
+        private readonly LibraryDbContext _dbContext;
         private IUserRepository _user;
         private IAuthorRepository _author;
         private IBookRepository _book;
         private IAuthorBookRepository _authorBook;
 
-        private IQueryHelper<BookEntity> _queryHelper;
+        private readonly IQueryHelper<BookEntity, BookParameters> _queryHelper;
 
-        public UnitOfWork(LibraryDbContext dbContext, IQueryHelper<BookEntity> queryHelper)
+        public UnitOfWork(LibraryDbContext dbContext, IQueryHelper<BookEntity, BookParameters> queryHelper)
         {
             _dbContext = dbContext;
             _queryHelper = queryHelper;
@@ -76,7 +75,7 @@ namespace Library.Repository
 
         public async Task SaveAsync()
         {
-            await this._dbContext.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync();
         }
 
         private bool disposed = false;

@@ -1,6 +1,6 @@
-﻿using Library.DAL.DTOs.Author;
+﻿using Library.Models.DTOs.Author;
 using Library.DAL.Entities;
-using Library.Models.Utils;
+using Library.Models.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Text;

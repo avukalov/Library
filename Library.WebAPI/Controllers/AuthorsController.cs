@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Library.Common.Logging;
-using Library.DAL.DTOs.Author;
+using Library.Models.DTOs.Author;
 using Library.DAL.Entities;
 using Library.Repository.Common;
 using Library.Service.Common;
@@ -94,7 +94,7 @@ namespace Library.WebAPI.Controllers
 
             if (!result.Success)
             {
-                return BadRequest();
+                return BadRequest(result.Message);
             }
 
             return CreatedAtRoute(nameof(GetAuthorById), new { id = result.Data.Id }, result.Data);

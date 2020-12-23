@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
 using Library.Common.Logging;
-using Library.DAL.DTOs.AuthorBook;
-using Library.DAL.DTOs.Book;
+using Library.Models.DTOs.AuthorBook;
+using Library.Models.DTOs.Book;
 using Library.DAL.Entities;
 using Library.Models;
-using Library.Models.Utils;
+using Library.Models.Utilities;
 using Library.Repository.Common;
 using Library.Service.Common;
 using System;

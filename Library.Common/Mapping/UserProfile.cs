@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Library.DAL.Entities;
-using Library.DAL.DTOs.User;
+using Library.Models.DTOs.User;
 
 namespace Library.Common.Mapping
 {

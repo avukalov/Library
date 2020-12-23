@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Library.DAL.DTOs.User;
+using Library.Models.DTOs.User;
 using Library.DAL.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;

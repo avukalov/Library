@@ -10,6 +10,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Library.DAL\Library.DAL.csproj" />
     <ProjectReference Include="..\Library.Models.Common\Library.Models.Common.csproj" />
   </ItemGroup>
 

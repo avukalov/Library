@@ -28,16 +28,14 @@ namespace Library.WebAPI.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedAt")
-                        .IsConcurrencyToken()
-                        .ValueGeneratedOnAddOrUpdate()
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2020, 12, 20, 20, 8, 5, 33, DateTimeKind.Local).AddTicks(8692));
+                        .HasDefaultValueSql("GETDATE()");
 
                     b.Property<DateTime>("UpdatedAt")
-                        .IsConcurrencyToken()
-                        .ValueGeneratedOnAddOrUpdate()
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2020, 12, 20, 20, 8, 5, 33, DateTimeKind.Local).AddTicks(9319));
+                        .HasDefaultValueSql("GETDATE()");
 
                     b.HasKey("AuthorId", "BookId");
 
@@ -58,10 +56,9 @@ namespace Library.WebAPI.Migrations
                         .HasMaxLength(50);
 
                     b.Property<DateTime>("CreatedAt")
-                        .IsConcurrencyToken()
-                        .ValueGeneratedOnAddOrUpdate()
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2020, 12, 20, 20, 8, 5, 33, DateTimeKind.Local).AddTicks(6025));
+                        .HasDefaultValueSql("GETDATE()");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
@@ -74,10 +71,9 @@ namespace Library.WebAPI.Migrations
                         .HasMaxLength(50);
 
                     b.Property<DateTime>("UpdatedAt")
-                        .IsConcurrencyToken()
-                        .ValueGeneratedOnAddOrUpdate()
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2020, 12, 20, 20, 8, 5, 33, DateTimeKind.Local).AddTicks(6635));
+                        .HasDefaultValueSql("GETDATE()");
 
                     b.HasKey("AuthorId");
 
@@ -95,10 +91,9 @@ namespace Library.WebAPI.Migrations
                         .HasMaxLength(25);
 
                     b.Property<DateTime>("CreatedAt")
-                        .IsConcurrencyToken()
-                        .ValueGeneratedOnAddOrUpdate()
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2020, 12, 20, 20, 8, 5, 33, DateTimeKind.Local).AddTicks(341));
+                        .HasDefaultValueSql("GETDATE()");
 
                     b.Property<string>("Genre")
                         .HasColumnType("nvarchar(25)")
@@ -106,8 +101,8 @@ namespace Library.WebAPI.Migrations
 
                     b.Property<string>("ISBN")
                         .IsRequired()
-                        .HasColumnType("nvarchar(13)")
-                        .HasMaxLength(13);
+                        .HasColumnType("nvarchar(17)")
+                        .HasMaxLength(17);
 
                     b.Property<string>("Language")
                         .IsRequired()
@@ -118,7 +113,6 @@ namespace Library.WebAPI.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Publisher")
-                        .IsRequired()
                         .HasColumnType("nvarchar(50)")
                         .HasMaxLength(50);
 
@@ -128,10 +122,9 @@ namespace Library.WebAPI.Migrations
                         .HasMaxLength(100);
 
                     b.Property<DateTime>("UpdatedAt")
-                        .IsConcurrencyToken()
-                        .ValueGeneratedOnAddOrUpdate()
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2020, 12, 20, 20, 8, 5, 33, DateTimeKind.Local).AddTicks(1492));
+                        .HasDefaultValueSql("GETDATE()");
 
                     b.HasKey("BookId");
 
@@ -197,7 +190,7 @@ namespace Library.WebAPI.Migrations
                     b.Property<DateTime>("JoinDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2020, 12, 20, 20, 8, 5, 21, DateTimeKind.Local).AddTicks(2433));
+                        .HasDefaultValueSql("GETDATE()");
 
                     b.Property<string>("LastName")
                         .IsRequired()

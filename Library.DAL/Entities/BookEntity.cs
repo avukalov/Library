@@ -10,15 +10,13 @@ namespace Library.DAL.Entities
     [Table("Book")]
     public class BookEntity : BaseEntity, IEntity
     {
-        [Key]
         public Guid BookId { get; set; }
         public string Title { get; set; }
         public string Publisher { get; set; }
         public string Language { get; set; }
         public string ISBN { get; set; }
-        public string Category { get; set; } = "uncategorized";
+        public string Category { get; set; }
         public string Genre { get; set; }
-        [DataType(DataType.Date)]
         public DateTime Published { get; set; }
 
         public List<AuthorBookEntity> BookAuthors { get; set; }

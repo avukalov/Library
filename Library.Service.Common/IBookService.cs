@@ -1,7 +1,7 @@
-﻿using Library.DAL.DTOs.Book;
+﻿using Library.Models.DTOs.Book;
 using Library.DAL.Entities;
 using Library.Models;
-using Library.Models.Utils;
+using Library.Models.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Text;

@@ -1,8 +1,8 @@
 ﻿using Library.DAL;
 using Library.DAL.Entities;
 using Library.Models;
-using Library.Models.Common.Utils;
-using Library.Models.Utils;
+using Library.Models.Common.Utilities;
+using Library.Models.Utilities;
 using Library.Repository.Common;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.DynamicLinq;
@@ -19,9 +19,9 @@ namespace Library.Repository
     public class BookRepository : GenericRepository<BookEntity>, IBookRepository
     {
         private readonly LibraryDbContext _dbContext;
-        private readonly IQueryHelper<BookEntity> _queryHelper;
+        private readonly IQueryHelper<BookEntity, BookParameters> _queryHelper;
 
-        public BookRepository(LibraryDbContext dbContext, IQueryHelper<BookEntity> queryHelper) : base(dbContext)
+        public BookRepository(LibraryDbContext dbContext, IQueryHelper<BookEntity, BookParameters> queryHelper) : base(dbContext)
         {
             _dbContext = dbContext;
             _queryHelper = queryHelper;
@@ -44,16 +44,18 @@ namespace Library.Repository
             {
                 books = books.Where(b => b.Category.Contains(bookParameters.Category));
             }
-            
+
             if (!String.IsNullOrEmpty(bookParameters.Language))
             {
                 books = books.Where(b => b.Language.Equals(bookParameters.Language));
             }
-            
+
             books = books.Where(b =>
                         b.Published.Year >= bookParameters.MinPublishedYear &&
                         b.Published.Year <= bookParameters.MaxPublishedYear)
                         .OrderBy(b => b.Title);
+
+            //var filteredBooks = _queryHelper.Filter.ApplyFilters(books, bookParameters);
 
             var sortedBooks = _queryHelper.Sort.ApplySort(books, bookParameters.OrderBy);
 

@@ -1,6 +1,6 @@
 ﻿using Library.DAL.Entities;
 using Library.Models;
-using Library.Models.Utils;
+using Library.Models.Utilities;
 using System;
 using System.Threading.Tasks;
 

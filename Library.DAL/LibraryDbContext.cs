@@ -1,7 +1,11 @@
-﻿using Library.DAL.Entities;
+﻿using Library.DAL.Configuration;
+using Library.DAL.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Library.DAL
 {
@@ -19,48 +23,39 @@ namespace Library.DAL
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<UserEntity>().Property(u => u.FirstName).HasMaxLength(50).IsRequired();
-            modelBuilder.Entity<UserEntity>().Property(u => u.LastName).HasMaxLength(50).IsRequired();
-            modelBuilder.Entity<UserEntity>().Property(u => u.DateOfBirth).IsRequired();
-            modelBuilder.Entity<UserEntity>().Property(u => u.Oib).HasMaxLength(11).IsRequired();
-            modelBuilder.Entity<UserEntity>().Property(u => u.JoinDate).HasDefaultValue(DateTime.Now).IsRequired();
+            modelBuilder.ApplyConfiguration(new UserMap());
 
-            //modelBuilder.Entity<BookEntity>().HasKey(b => b.BookId);
-            modelBuilder.Entity<BookEntity>().Property(b => b.Title).HasMaxLength(100).IsRequired();
-            modelBuilder.Entity<BookEntity>().Property(b => b.Publisher).HasMaxLength(50).IsRequired();
-            modelBuilder.Entity<BookEntity>().Property(b => b.Language).HasMaxLength(50).IsRequired();
-            modelBuilder.Entity<BookEntity>().Property(b => b.ISBN).HasMaxLength(13).IsRequired();
-            modelBuilder.Entity<BookEntity>().Property(b => b.Category).HasMaxLength(25);
-            modelBuilder.Entity<BookEntity>().Property(b => b.Genre).HasMaxLength(25);
-            modelBuilder.Entity<BookEntity>().Property(b => b.Published);
-            modelBuilder.Entity<BookEntity>().Property(a => a.CreatedAt).HasDefaultValue(DateTime.Now);
-            modelBuilder.Entity<BookEntity>().Property(a => a.UpdatedAt).HasDefaultValue(DateTime.Now);
-
-            //modelBuilder.Entity<AuthorEntity>().HasKey(a => a.AuthorId);
-            modelBuilder.Entity<AuthorEntity>().Property(a => a.FirstName).HasMaxLength(50).IsRequired();
-            modelBuilder.Entity<AuthorEntity>().Property(a => a.LastName).HasMaxLength(50).IsRequired();
-            modelBuilder.Entity<AuthorEntity>().Property(a => a.Country).HasMaxLength(50).IsRequired();
-            modelBuilder.Entity<AuthorEntity>().Property(a => a.CreatedAt).HasDefaultValue(DateTime.Now);
-            modelBuilder.Entity<AuthorEntity>().Property(a => a.UpdatedAt).HasDefaultValue(DateTime.Now);
-
-
-            modelBuilder.Entity<AuthorBookEntity>().Property(a => a.CreatedAt).HasDefaultValue(DateTime.Now);
-            modelBuilder.Entity<AuthorBookEntity>().Property(a => a.UpdatedAt).HasDefaultValue(DateTime.Now);
-            modelBuilder.Entity<AuthorBookEntity>()
-                .HasKey(ab => new { ab.AuthorId, ab.BookId });
-
-            modelBuilder.Entity<AuthorBookEntity>()
-                .HasOne(ab => ab.Book)
-                .WithMany(b => b.BookAuthors)
-                .HasForeignKey(ab => ab.BookId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            modelBuilder.Entity<AuthorBookEntity>()
-                .HasOne(ab => ab.Author)
-                .WithMany(a => a.AuthorBooks)
-                .HasForeignKey(ab => ab.AuthorId)
-                .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.ApplyConfiguration(new BookMap());
+            modelBuilder.ApplyConfiguration(new AuthorMap());
+            modelBuilder.ApplyConfiguration(new AuthorBookMap());
         }
 
+        public override int SaveChanges(bool acceptAllChangesOnSuccess)
+        {
+            OnBeforeSaving();
+            return base.SaveChanges(acceptAllChangesOnSuccess);
+        }
+
+        public override async Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
+        {
+            OnBeforeSaving();
+            return (await base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken));
+        }
+
+        private void OnBeforeSaving()
+        {
+            var entries = ChangeTracker.Entries()
+                .Where(e => e.Entity is BaseEntity && e.State == EntityState.Added || e.State == EntityState.Modified);
+
+            foreach (var entry in entries)
+            {
+                ((BaseEntity)entry.Entity).UpdatedAt = DateTime.Now;
+
+                if (entry.State == EntityState.Added)
+                {
+                    ((BaseEntity)entry.Entity).CreatedAt = DateTime.Now;
+                }
+            }
+        }
     }
 }

@@ -9,13 +9,10 @@ namespace Library.DAL.Entities
 {
     public class UserEntity : IdentityUser<Guid>, IEntity
     {
-        
         public string FirstName { get; set; }
         public string LastName { get; set; }
-
-        [DataType(DataType.Date)]
-        public DateTime DateOfBirth { get; set; }
         public string Oib { get; set; }
+        public DateTime DateOfBirth { get; set; }
         public DateTime JoinDate { get; set; }
        
 
