@@ -49,6 +49,8 @@ namespace Library.WebAPI
 
             app.UseHttpsRedirection();
 
+            app.ConfigureExceptionMiddleware();
+
             app.UseCors("CorsPolicy");
 
             app.UseRouting();
