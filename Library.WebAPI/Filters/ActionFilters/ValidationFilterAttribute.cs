@@ -1,4 +1,5 @@
-﻿using Library.Models.Common.Utilities;
+﻿using Library.DAL.Entities;
+using Library.Models.Common.Utilities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System;
@@ -25,9 +26,7 @@ namespace Library.WebAPI.Filters.ActionFilters
                 context.Result = new BadRequestObjectResult(context.ModelState);
             }
 
-
-            var result = await next();
-
+            await next();
         }
     }
 }

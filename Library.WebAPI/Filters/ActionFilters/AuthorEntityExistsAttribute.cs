@@ -35,16 +35,18 @@ namespace Library.WebAPI.Filters.ActionFilters
 
             var author = await _authorService.GetAuthorByIdAsync(id);
 
-            if (author == null)
+            if (author.Data == null)
             {
                 context.Result = new NotFoundResult();
+                return;
             }
             else
             {
-                context.HttpContext.Items.Add("author", author);
+                context.HttpContext.Items.Add("author", author.Data);
+                await next();
             }
 
-            var result = await next();
+            
         }
     }
 }

@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Library.WebAPI.Filters.ActionFilters;
 
 namespace Library.WebAPI.Controllers
 {
@@ -45,8 +46,12 @@ namespace Library.WebAPI.Controllers
         }
 
         [HttpGet("{id}", Name = nameof(GetAuthorById))]
+        [ServiceFilter(typeof(AuthorEntityExistsAttribute))]
         public async Task<IActionResult> GetAuthorById(Guid id)
         {
+            var authorFromHttp = HttpContext.Items["author"] as AuthorDto;
+            Console.WriteLine(authorFromHttp);
+
             var result = await _authorService.GetAuthorByIdAsync(id);
 
             if (!result.Success)

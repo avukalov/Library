@@ -2,8 +2,6 @@
 using Library.Models.Utilities;
 using Microsoft.AspNetCore.Http;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -11,8 +9,8 @@ namespace Library.WebAPI.Middlewares
 {
     public class ExceptionMiddleware
     {
-        private RequestDelegate _next;
-        private ILoggerManager _logger;
+        private readonly RequestDelegate _next;
+        private readonly ILoggerManager _logger;
 
         public ExceptionMiddleware(RequestDelegate next, ILoggerManager logger)
         {

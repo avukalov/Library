@@ -5,6 +5,7 @@ using Library.DAL;
 using Library.DAL.Entities;
 using Library.Repository;
 using Library.Service;
+using Library.WebAPI.Filters;
 using Library.WebAPI.Settings;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -62,6 +63,7 @@ namespace Library.WebAPI.Extensions
             builder.RegisterModule<CommonDIModule>();
             builder.RegisterModule<ServiceDIModule>();
             builder.RegisterModule<RepositoryDIModule>();
+            builder.RegisterModule<FiltersDIModule>();
         }
         public static void ConfigureSwagger(this IServiceCollection services)
         {

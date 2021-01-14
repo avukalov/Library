@@ -10,7 +10,7 @@ namespace Library.WebAPI.Filters.ActionFilters
 {
     public class BookEntityExistsAttribute : IAsyncActionFilter
     {
-        private IBookService _bookService;
+        private readonly IBookService _bookService;
         public BookEntityExistsAttribute (IBookService bookService)
         {
             _bookService = bookService;
@@ -40,7 +40,7 @@ namespace Library.WebAPI.Filters.ActionFilters
                 context.HttpContext.Items.Add("book", book);
             }
 
-            var result = await next();
+            await next();
         }
     }
 }
