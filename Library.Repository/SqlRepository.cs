@@ -71,18 +71,15 @@ namespace Library.Repository
                     _connection.Open();
                     using (SqlDataReader reader = await command.ExecuteReaderAsync())
                     {
-                        var result = await reader.ReadAsync();
-                        if (result)
+                        if (await reader.ReadAsync())
                         {
-                            AuthorEntity author = new AuthorEntity()
+                            return new AuthorEntity()
                             {
                                 AuthorId = Guid.Parse(reader["AuthorId"].ToString()),
                                 FirstName = reader["FirstName"].ToString(),
                                 LastName = reader["LastName"].ToString(),
                                 Country = reader["Country"].ToString()
                             };
-                            reader.Close();
-                            return author;
                         }
                         return null;
                     }
