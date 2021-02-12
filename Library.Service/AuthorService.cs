@@ -17,12 +17,14 @@ namespace Library.Service
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly ILoggerManager _logger;
+        private readonly ISqlRepository _sqlRepo;
 
-        public AuthorService(IUnitOfWork unitOfWork, IMapper mapper, ILoggerManager logger)
+        public AuthorService(IUnitOfWork unitOfWork, IMapper mapper, ILoggerManager logger, ISqlRepository sqlRepo)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _logger = logger;
+            _sqlRepo = sqlRepo;
         }
 
         public async Task<ServiceResponse<AuthorDto>> CreateAuthorAsync(AuthorForCreationDto author)
@@ -33,8 +35,9 @@ namespace Library.Service
             {
                 var authorEntity = _mapper.Map<AuthorEntity>(author);
 
-                _unitOfWork.Author.CreateAuthor(authorEntity);
-                await _unitOfWork.SaveAsync();
+                //_unitOfWork.Author.CreateAuthor(authorEntity);
+                //await _unitOfWork.SaveAsync();
+                await _sqlRepo.CreateAuthor(authorEntity);
 
                 response.Data = _mapper.Map<AuthorDto>(authorEntity);
             }
@@ -87,22 +90,27 @@ namespace Library.Service
 
             try
             {
-                var author = await _unitOfWork.Author.GetAuthorByIdAsync(id);
+                //var author = await _unitOfWork.Author.GetAuthorByIdAsync(id);
 
-                if (author == null)
+                //if (author == null)
+                //{
+                //    response.Success = false;
+                //    response.Message = "NotFound";
+
+                //    _logger.LogError($"Author with id: {id} not found");
+                //}
+
+                //_unitOfWork.Author.DeleteAuthor(author);
+                //await _unitOfWork.SaveAsync();
+                var result = await _sqlRepo.DeleteAuthor(id);
+                if (!result)
                 {
                     response.Success = false;
-                    response.Message = "NotFound";
-
-                    _logger.LogError($"Author with id: {id} not found");
                 }
 
-                _unitOfWork.Author.DeleteAuthor(author);
-                await _unitOfWork.SaveAsync();
-
                 _logger.LogInfo($"Author with id: {id} successfuly deleted");
-
-                response.Data = _mapper.Map<AuthorDto>(author);
+                
+                //response.Data = _mapper.Map<AuthorDto>(author);
 
             }
             catch (Exception ex)
@@ -121,9 +129,10 @@ namespace Library.Service
 
             try
             {
-                var author = await _unitOfWork.Author.GetAuthorByIdAsync(id);
+                var author = await _sqlRepo.GetAuthorByIdAsync(id);
+                //var author = await _unitOfWork.Author.GetAuthorByIdAsync(id);
 
-                if(author == null)
+                if (author == null)
                 {
                     response.Success = false;
                     response.Message = "NotFound";

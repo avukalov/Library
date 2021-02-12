@@ -14,6 +14,7 @@ namespace Library.Repository
             base.Load(builder);
             builder.RegisterType<QueryHelper<BookEntity, BookParameters>>().As<IQueryHelper<BookEntity, BookParameters>>().InstancePerLifetimeScope();
             builder.RegisterType<UnitOfWork>().As<IUnitOfWork>().InstancePerLifetimeScope();
+            builder.RegisterType<SqlRepository>().As<ISqlRepository>();
             
         }
     }

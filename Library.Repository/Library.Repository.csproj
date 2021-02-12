@@ -6,6 +6,7 @@
 
 	<ItemGroup>
 	  <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="7.1.0" />
+	  <PackageReference Include="Microsoft.Data.SqlClient" Version="2.1.1" />
 	  <PackageReference Include="Microsoft.EntityFrameworkCore.DynamicLinq" Version="3.2.6" />
 	</ItemGroup>
 

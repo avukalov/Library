@@ -50,22 +50,25 @@ namespace Library.WebAPI.Controllers
         public async Task<IActionResult> GetAuthorById(Guid id)
         {
             var authorFromHttp = HttpContext.Items["author"] as AuthorDto;
-            Console.WriteLine(authorFromHttp);
-
-            var result = await _authorService.GetAuthorByIdAsync(id);
-
-            if (!result.Success)
+            
+            if(authorFromHttp == null)
             {
-                if (result.Message == "NotFound")
+                var result = await _authorService.GetAuthorByIdAsync(id);
+
+                if (!result.Success)
                 {
-                    _logger.LogError($"Author with id: {id} not found");
-                    return NotFound();
+                    if (result.Message == "NotFound")
+                    {
+                        _logger.LogError($"Author with id: {id} not found");
+                        return NotFound();
+                    }
+
+                    return BadRequest();
                 }
 
-                return BadRequest();
+                return Ok(result.Data);
             }
-
-            return Ok(result.Data);
+            return Ok(authorFromHttp);
         }
 
         [HttpGet("{id}/books")]
@@ -131,9 +134,17 @@ namespace Library.WebAPI.Controllers
         }
 
         [HttpDelete("{id}")]
+        [ServiceFilter(typeof(AuthorEntityExistsAttribute))]
         public async Task<IActionResult> DeleteAuthor(Guid id)
         {
-            var result = await _authorService.DeleteAuthorAsync(id);
+            var authorFromHttp = HttpContext.Items["author"] as AuthorDto;
+            if (authorFromHttp == null)
+            {
+                _logger.LogError($"Author with id: {id} not found");
+                return NotFound();
+            }
+
+            var result = await _authorService.DeleteAuthorAsync(authorFromHttp.Id);
 
             if (!result.Success)
             {
