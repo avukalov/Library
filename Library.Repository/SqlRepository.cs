@@ -21,7 +21,7 @@ namespace Library.Repository
 
         }
 
-        public async Task CreateAuthor(AuthorEntity author)
+        public async Task<bool> CreateAuthorAsync(AuthorEntity author)
         {
             using (_connection)
             {
@@ -37,12 +37,12 @@ namespace Library.Repository
                     command.Parameters.AddWithValue("@UpdatedAt", DateTime.Now);
 
                     _connection.Open();
-                    await command.ExecuteNonQueryAsync();
+                    return (await command.ExecuteNonQueryAsync()) > 0;
                 }
             }
         }
 
-        public async Task<bool> DeleteAuthor(Guid id)
+        public async Task<bool> DeleteAuthorAsync(Guid id)
         {
             using (_connection)
             {
@@ -54,7 +54,6 @@ namespace Library.Repository
                     
                     _connection.Open();
                     return (await command.ExecuteNonQueryAsync()) > 0;
-                    
                 }
             }
         }
@@ -96,7 +95,7 @@ namespace Library.Repository
             throw new NotImplementedException();
         }
 
-        public Task<AuthorEntity> UpdateAuthor(AuthorEntity author)
+        public Task<AuthorEntity> UpdateAuthorAsync(AuthorEntity author)
         {
             throw new NotImplementedException();
         }

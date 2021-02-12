@@ -10,8 +10,8 @@ namespace Library.Repository.Common
     {
         Task<List<AuthorEntity>> GetAuthorsAsync();
         Task<AuthorEntity> GetAuthorByIdAsync(Guid id);
-        Task CreateAuthor(AuthorEntity author);
-        Task<AuthorEntity> UpdateAuthor(AuthorEntity author);
-        Task<bool> DeleteAuthor(Guid id);
+        Task<bool> CreateAuthorAsync(AuthorEntity author);
+        Task<AuthorEntity> UpdateAuthorAsync(AuthorEntity author);
+        Task<bool> DeleteAuthorAsync(Guid id);
     }
 }

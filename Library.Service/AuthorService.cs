@@ -37,7 +37,7 @@ namespace Library.Service
 
                 //_unitOfWork.Author.CreateAuthor(authorEntity);
                 //await _unitOfWork.SaveAsync();
-                await _sqlRepo.CreateAuthor(authorEntity);
+                await _sqlRepo.CreateAuthorAsync(authorEntity);
 
                 response.Data = _mapper.Map<AuthorDto>(authorEntity);
             }
@@ -102,7 +102,8 @@ namespace Library.Service
 
                 //_unitOfWork.Author.DeleteAuthor(author);
                 //await _unitOfWork.SaveAsync();
-                var result = await _sqlRepo.DeleteAuthor(id);
+
+                var result = await _sqlRepo.DeleteAuthorAsync(id);
                 if (!result)
                 {
                     response.Success = false;
