@@ -91,28 +91,29 @@ namespace Library.Service
 
             try
             {
-                //var author = await _unitOfWork.Author.GetAuthorByIdAsync(id);
+                var author = await _unitOfWork.Author.GetAuthorByIdAsync(id);
 
-                //if (author == null)
-                //{
-                //    response.Success = false;
-                //    response.Message = "NotFound";
+                if (author == null)
+                {
+                    response.Success = false;
+                    response.Message = "NotFound";
 
-                //    _logger.LogError($"Author with id: {id} not found");
-                //}
+                    _logger.LogError($"Author with id: {id} not found");
+                }
 
                 //_unitOfWork.Author.DeleteAuthor(author);
                 //await _unitOfWork.SaveAsync();
 
-                var result = await _sqlRepo.DeleteAuthorAsync(id);
+                var result = await _sqlRepo.DeleteAuthorAsync(author.AuthorId);
+
                 if (!result)
                 {
                     response.Success = false;
                 }
 
                 _logger.LogInfo($"Author with id: {id} successfuly deleted");
-                
-                //response.Data = _mapper.Map<AuthorDto>(author);
+
+                response.Data = _mapper.Map<AuthorDto>(author);
 
             }
             catch (Exception ex)
