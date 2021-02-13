@@ -11,7 +11,7 @@ namespace Library.Repository.Common
         Task<List<AuthorEntity>> GetAuthorsAsync();
         Task<AuthorEntity> GetAuthorByIdAsync(Guid id);
         Task<bool> CreateAuthorAsync(AuthorEntity author);
-        Task<AuthorEntity> UpdateAuthorAsync(AuthorEntity author);
+        Task<bool> UpdateAuthorAsync(AuthorEntity author);
         Task<bool> DeleteAuthorAsync(Guid id);
     }
 }

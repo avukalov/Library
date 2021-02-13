@@ -25,7 +25,9 @@ namespace Library.Repository
         {
             using (_connection)
             {
-                string query = "INSERT INTO Author (AuthorId, FirstName, LastName, Country, CreatedAt, UpdatedAt) VALUES (@AuthorId, @FirstName, @LastName, @Country, @CreatedAt, @UpdatedAt)";
+                string query = "" + 
+                    "INSERT INTO Author (AuthorId, FirstName, LastName, Country, CreatedAt, UpdatedAt) " + 
+                    "VALUES (@AuthorId, @FirstName, @LastName, @Country, @CreatedAt, @UpdatedAt);";
 
                 using (SqlCommand command = new SqlCommand(query, _connection))
                 {
@@ -46,7 +48,7 @@ namespace Library.Repository
         {
             using (_connection)
             {
-                string query = "DELETE FROM Author WHERE AuthorId = @AuthorId";
+                string query = "DELETE FROM Author WHERE AuthorId = @AuthorId;";
 
                 using (SqlCommand command = new SqlCommand(query, _connection))
                 {
@@ -62,7 +64,7 @@ namespace Library.Repository
         {   
             using (_connection)
             {
-                string query = "SELECT * FROM Author WHERE AuthorId = @AuthorId";
+                string query = "SELECT * FROM Author WHERE AuthorId = @AuthorId;";
 
                 using (SqlCommand command = new SqlCommand(query, _connection))
                 {
@@ -87,14 +89,58 @@ namespace Library.Repository
             }
         }
 
-        public Task<List<AuthorEntity>> GetAuthorsAsync()
+        public async Task<List<AuthorEntity>> GetAuthorsAsync()
         {
-            throw new NotImplementedException();
+            using (_connection)
+            {
+                string query = "SELECT * FROM Author;";
+
+                using(SqlCommand command = new SqlCommand(query, _connection))
+                {
+                    _connection.Open();
+                    using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                    {
+                        var authors = new List<AuthorEntity>();
+                        while (await reader.ReadAsync())
+                        {
+                            var author = new AuthorEntity()
+                            {
+                                AuthorId = Guid.Parse(reader["AuthorId"].ToString()),
+                                FirstName = reader["FirstName"].ToString(),
+                                LastName = reader["LastName"].ToString(),
+                                Country = reader["Country"].ToString()
+                            };
+                            authors.Add(author);
+                        }
+
+                        await reader.CloseAsync();
+                        return authors;
+                    }
+                }
+            }
         }
 
-        public Task<AuthorEntity> UpdateAuthorAsync(AuthorEntity author)
+        public async Task<bool> UpdateAuthorAsync(AuthorEntity author)
         {
-            throw new NotImplementedException();
+            using (_connection)
+            {
+                string query = "" +
+                    "UPDATE Author " +
+                    "SET FirstName = @FirstName, LastName = @LastName, Country = @Country, UpdatedAt = @UpdatedAt " +
+                    "WHERE AuthorId = @AuthorId;";
+
+                using (SqlCommand command = new SqlCommand(query, _connection))
+                {
+                    command.Parameters.AddWithValue("@AuthorId", author.AuthorId);
+                    command.Parameters.AddWithValue("@FirstName", author.FirstName);
+                    command.Parameters.AddWithValue("@LastName", author.LastName);
+                    command.Parameters.AddWithValue("@Country", author.Country);
+                    command.Parameters.AddWithValue("@UpdatedAt", DateTime.Now);
+
+                    _connection.Open();
+                    return (await command.ExecuteNonQueryAsync()) > 0;
+                }
+            }
         }
     }
 }

@@ -68,8 +68,9 @@ namespace Library.Service
 
                 _mapper.Map(authorUpdate, author);
 
-                _unitOfWork.Author.UpdateAuthor(author);
-                await _unitOfWork.SaveAsync();
+                //_unitOfWork.Author.UpdateAuthor(author);
+                //await _unitOfWork.SaveAsync();
+                await _sqlRepo.UpdateAuthorAsync(author);
 
                 _logger.LogInfo($"Author with id: {author.AuthorId} successfuly updated");
 
@@ -160,7 +161,8 @@ namespace Library.Service
 
             try
             {
-                var authors = await _unitOfWork.Author.GetAuthorsAsync();
+                //var authors = await _unitOfWork.Author.GetAuthorsAsync();
+                var authors = await _sqlRepo.GetAuthorsAsync();
 
                 if (authors == null)
                 {
